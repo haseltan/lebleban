@@ -1,0 +1,60 @@
+<html>
+<head>
+
+<script src="evetHayirKontrol.js"></script>
+<script src="tablolama.js"></script>
+<script src="elemanGirme.js"></script>
+<script src="satirSutunEkleme.js"></script>
+
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+</style>
+
+</head>
+<body>
+
+<button onclick="tabloYap()"> Tablo yap
+</button>
+
+<button onclick="satirEkle()"> Satir ekle
+</button>
+
+<div id="tablo"></div>
+
+<script>
+
+var i = 1;
+var eleman;
+var elemanListe = [];
+
+//Hata bulmak için çalıştırılacak fonksiyon.
+//function debug(){
+//};
+
+
+
+
+//burda sayı veya gec yazılıp yazılmadığı kontrol edilmesi gerekiyor
+function tabloYap() {
+	ekleme= "";
+	var baslikSayac;
+	var baslikSayi = prompt("Tablonuzun basliklari kac tane olacak? Sayisini giriniz.(En fazla 10 baslik olabilir) Saymadiysanız gec yaziniz.");
+	if (baslikSayi == "gec") {
+		sayisizListeElemanGir();
+	}else if(baslikSayi < 11) {
+		for (baslikSayac = 1; baslikSayac <= baslikSayi; baslikSayac++) {
+		baslikElemanGir();
+		};
+	baslikSatirOlustur();
+	elemanSatirOlustur();
+	tabloyuBitir();
+	}else {
+	};
+};
+
+</script>
+
+</body>
+</html>
