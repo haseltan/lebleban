@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<body onload="startGame()">
+<script>
+
+var myGamePiece;
+var myGamePiece1,
+myGamePiece2,
+myGamePiece3,
+myGamePiece4,
+bullet;
+var speedX1;
+var speedY1;
+
+function startGame() {
+    myGameArea.start();
+    myGamePiece = new component(30, 30, "red", 10, 120);
+	myGamePiece1 = new component(4, 4, "black", 10, 120);
+    myGamePiece2 = new component(4, 4, "black", 10, 120);
+    myGamePiece3 = new component(4, 4, "black", 10, 120);
+    myGamePiece4 = new component(4, 4, "black", 10, 120);
+}
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 480;
+        this.canvas.height = 270;
+		this.canvas.style.cursor = "none"; //hide the original cursor
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.interval = setInterval(updateGameArea, 20);
+		window.addEventListener('mousedown', function (e) {
+            myGameArea.x = e.pageX;
+            myGameArea.y = e.pageY;
+            bullet = new component(6, 6, "black", myGamePiece.x, myGamePiece.y); 
+			var speed = 10;
+			var way = (myGameArea.x - myGamePiece.x)**2 + (myGameArea.y - myGamePiece.y)**2;
+			var realWay = Math.sqrt(way);
+			var time = realWay / speed;
+			speedX1 = (myGameArea.x - myGamePiece.x) / time;
+			speedY1 = (myGameArea.y - myGamePiece.y) / time;
+        })
+		 window.addEventListener('mouseup', function (e) {
+            myGameArea.x = false;
+            myGameArea.y = false;
+        })
+		window.addEventListener('mousemove', function (e) {
+            myGameArea.x = e.pageX;
+            myGameArea.y = e.pageY;
+        })
+		window.addEventListener('keydown', function (e) {
+            myGameArea.keys = (myGameArea.keys || []);
+            myGameArea.keys[e.keyCode] = (e.type == "keydown");
+        })
+        window.addEventListener('keyup', function (e) {
+            myGameArea.keys[e.keyCode] = (e.type == "keydown");            
+        })
+    }, 
+    clear : function(){
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
+
+function component(width, height, color, x, y) {
+    this.gamearea = myGameArea;
+    this.width = width;
+    this.height = height;
+    this.speedX = 0;
+    this.speedY = 0;    
+    this.x = x;
+    this.y = y;    
+    this.update = function() {
+        ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+    this.newPos = function() {
+        this.x += this.speedX;
+        this.y += this.speedY;        
+    }    
+}
+
+function updateGameArea() {
+    myGameArea.clear();
+    if (myGameArea.x && myGameArea.y) {
+        bullet.speedY = speedY1;
+        bullet.speedX = speedX1;
+    }
+	myGamePiece.speedX = 0;
+    myGamePiece.speedY = 0;    
+	if (myGameArea.x && myGameArea.y) {
+        myGamePiece1.x = myGameArea.x + 5;
+        myGamePiece1.y = myGameArea.y;  
+        myGamePiece2.x = myGameArea.x - 5;
+        myGamePiece2.y = myGameArea.y;        
+        myGamePiece3.x = myGameArea.x;
+        myGamePiece3.y = myGameArea.y + 5;        
+        myGamePiece4.x = myGameArea.x;
+        myGamePiece4.y = myGameArea.y - 5;        
+    }
+	if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -3; }
+    if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 3; }
+    if (myGameArea.keys && myGameArea.keys[38]) {myGamePiece.speedY = -3; }
+    if (myGameArea.keys && myGameArea.keys[40]) {myGamePiece.speedY = 3; }
+    myGamePiece.newPos(); 
+	myGamePiece1.update();
+    myGamePiece2.update();
+    myGamePiece3.update();
+    myGamePiece4.update();
+    myGamePiece.update();
+	bullet.newPos();
+    bullet.update();
+}
+</script>
+<p>Make sure this window has focus, then use the arrow keys on you keyboard to move the red square.</p>
+<p>When pressing both the left and the down arrow, the red square will move both down and to the left.</p>
+</body>
+</html>
